@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -27,6 +28,8 @@ public class Comun {
 
     static FirebaseStorage storage;
     static StorageReference storageRef;
+
+    static FirebaseAnalytics mFirebaseAnalytics;
 
     static void mostrarDialogo (final Context context, final String mensaje){
         Intent intent = new Intent(context, Dialogo.class);

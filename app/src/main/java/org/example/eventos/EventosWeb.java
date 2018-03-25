@@ -47,7 +47,8 @@ public class EventosWeb extends AppCompatActivity{
         if (comprobarConectividad()) {
 
             //navegador.loadUrl("https://eventos-288ba.firebaseapp.com/index.html");
-            navegador.loadUrl("https://eventos-288ba.firebaseapp.com/index2.html");
+            //navegador.loadUrl("https://eventos-288ba.firebaseapp.com/index2.html");
+            navegador.loadUrl("file:///android_asset/index.html");
 
             navegador.setWebViewClient(new WebViewClient() {
                 @Override
