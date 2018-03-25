@@ -3,9 +3,11 @@ package org.example.eventos;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,13 +15,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
 
 import static org.example.eventos.Comun.mostrarDialogo;
+import static org.example.eventos.Comun.storage;
+import static org.example.eventos.Comun.storageRef;
 import static org.example.eventos.EventosFirestore.EVENTOS;
 import static org.example.eventos.EventosFirestore.crearEventos;
 
@@ -77,6 +83,12 @@ public class ActividadPrincipal extends AppCompatActivity {
             }
         });
 
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl( "gs://eventos-288ba.appspot.com");
+
+        String[] PERMISOS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        ActivityCompat.requestPermissions(this, PERMISOS, 1);
+
     }
 
     @Override
@@ -131,6 +143,18 @@ public class ActividadPrincipal extends AppCompatActivity {
 
     public static Context getAppContext() {
         return ActividadPrincipal.getCurrentContext();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Toast.makeText(ActividadPrincipal.this, "Has denegado algún permiso de la aplicación.", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
     }
 
 }
