@@ -89,7 +89,8 @@ public class ActividadPrincipal extends AppCompatActivity {
         String[] PERMISOS = {
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 android.Manifest.permission.GET_ACCOUNTS,
-                android.Manifest.permission.CAMERA
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.ACCESS_NETWORK_STATE
         };
         ActivityCompat.requestPermissions(this, PERMISOS, 1);
 
@@ -155,6 +156,13 @@ public class ActividadPrincipal extends AppCompatActivity {
             case 1: {
                 if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     Toast.makeText(ActividadPrincipal.this, "Has denegado algún permiso de la aplicación.", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case 2: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) { }
+                else {
+                    Toast.makeText(ActividadPrincipal.this, "Permiso denegado para conocer el estado de la red.", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
