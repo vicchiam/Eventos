@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -66,6 +68,8 @@ public class EventoDetalles extends AppCompatActivity {
 
     static UploadTask uploadTask=null;
     StorageReference imagenRef;
+
+    final int SOLICITUD_FOTOGRAFIAS_DRIVE = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +142,14 @@ public class EventoDetalles extends AppCompatActivity {
                 break;
             case R.id.action_putFile:
                 seleccionarFotografiaDispositivo(vista, SOLICITUD_SELECCION_PUTFILE);
+                break;
+            case R.id.action_getFile:
+                descargarDeFirebaseStorage(evento);
+                break;
+            case R.id.action_fotografiasDrive:
+                Intent intent = new Intent(getBaseContext(), FotografiasDrive.class);
+                intent.putExtra("evento", evento);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -348,6 +360,26 @@ public class EventoDetalles extends AppCompatActivity {
             progresoSubida.dismiss();
         }
         super.onDestroy();
+    }
+
+    public void descargarDeFirebaseStorage(String fichero) {
+        StorageReference referenciaFichero = getStorageReference().child(fichero);
+        File rootPath = new File(Environment.getExternalStorageDirectory(), "Eventos");
+        if(!rootPath.exists()) {
+            rootPath.mkdirs();
+        }
+        final File localFile = new File(rootPath,evento+".jpg");
+        referenciaFichero.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                mostrarDialogo(getApplicationContext(), "Fichero descargado con éxito: "+localFile.toString());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                mostrarDialogo(getApplicationContext(), "Error al descargar el fichero.");
+            }
+        });
     }
 
 }
